@@ -59,4 +59,16 @@ public class BillSenderService {
         repository.deleteById(id);
         return true;
     }
+    
+    @Transactional
+    public BillSender updateTaskTitle(Long id, String taskTitle) {
+        BillSender sender = repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Bill sender not found."));
+
+        sender.setTaskTitle(taskTitle.trim());
+
+        return repository.save(sender);
+    }
+
 }

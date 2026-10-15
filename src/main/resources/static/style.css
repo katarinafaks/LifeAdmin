@@ -606,6 +606,30 @@ footer {
     margin-top: 8px;
 }
 
+.sender-rename-editor {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.sender-rename-input {
+    flex: 1;
+    min-width: 160px;
+    max-width: 280px;
+    padding: 8px 10px;
+    border: 1px solid #d5d2df;
+    border-radius: 8px;
+    font: inherit;
+}
+
+.sender-rename-editor .message {
+    flex-basis: 100%;
+    margin: 0;
+}
+
+
 #sender-list {
     display: flex;
     flex-direction: column;

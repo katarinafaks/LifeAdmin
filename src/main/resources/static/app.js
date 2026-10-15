@@ -503,6 +503,7 @@ async function deleteTask(task) {
     }
 }
 
+
 async function loadBillSenders() {
     senderList.replaceChildren(
         createElement("p", "loading", "Loading senders...")
@@ -533,6 +534,20 @@ async function loadBillSenders() {
                 createElement("p", "", sender.senderEmail)
             );
 
+            // Rename button
+            const renameButton = createElement(
+                "button",
+                "icon-button",
+                "Rename"
+            );
+
+            renameButton.type = "button";
+
+            renameButton.addEventListener("click", () => {
+                showSenderRenameEditor(sender, item);
+            });
+
+            // Remove button
             const deleteButton = createElement(
                 "button",
                 "icon-button delete",
@@ -540,6 +555,7 @@ async function loadBillSenders() {
             );
 
             deleteButton.type = "button";
+
             deleteButton.addEventListener("click", async () => {
                 const confirmed = window.confirm(
                     `Remove "${sender.senderEmail}" from bill scanning?`
@@ -575,7 +591,7 @@ async function loadBillSenders() {
                 }
             });
 
-            item.append(details, deleteButton);
+            item.append(details, renameButton, deleteButton);
             senderList.append(item);
         }
     } catch (error) {
@@ -588,6 +604,109 @@ async function loadBillSenders() {
         );
     }
 }
+
+
+function showSenderRenameEditor(sender, item) {
+    // Don't open multiple editors for the same sender.
+    if (item.querySelector(".sender-rename-editor")) {
+        return;
+    }
+
+    const editor = createElement("div", "sender-rename-editor");
+
+    const input = createElement("input", "sender-rename-input");
+    input.type = "text";
+    input.value = sender.taskTitle;
+    input.maxLength = 100;
+    input.required = true;
+    input.setAttribute("aria-label", "New task title");
+
+    const saveButton = createElement(
+        "button",
+        "icon-button",
+        "Save"
+    );
+    saveButton.type = "button";
+
+    const cancelButton = createElement(
+        "button",
+        "icon-button",
+        "Cancel"
+    );
+    cancelButton.type = "button";
+
+    const message = createElement("p", "message");
+
+    saveButton.addEventListener("click", async () => {
+        const taskTitle = input.value.trim();
+
+        if (!taskTitle) {
+            showMessage(message, "Please enter a name.", "error");
+            input.focus();
+            return;
+        }
+
+        saveButton.disabled = true;
+        cancelButton.disabled = true;
+        input.disabled = true;
+
+        showMessage(message, "Saving name...");
+
+        try {
+            await apiRequest(`/api/bill-senders/${sender.id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ taskTitle })
+            });
+
+            showMessage(
+                senderFormMessage,
+                "Sender name updated.",
+                "success"
+            );
+
+            await loadBillSenders();
+        } catch (error) {
+            showMessage(
+                message,
+                `Couldn't update name. ${error.message}`,
+                "error"
+            );
+
+            saveButton.disabled = false;
+            cancelButton.disabled = false;
+            input.disabled = false;
+            input.focus();
+        }
+    });
+
+    cancelButton.addEventListener("click", () => {
+        editor.remove();
+    });
+
+    // Allow Enter to save and Escape to cancel.
+    input.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            saveButton.click();
+        }
+
+        if (event.key === "Escape") {
+            editor.remove();
+        }
+    });
+
+    editor.append(input, saveButton, cancelButton, message);
+    item.append(editor);
+
+    input.focus();
+    input.select();
+}
+
+
+
 
 senderManagerToggle.addEventListener("click", async () => {
     const opening = senderManager.hidden;

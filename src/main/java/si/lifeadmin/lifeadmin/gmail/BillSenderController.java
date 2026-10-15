@@ -43,6 +43,29 @@ public class BillSenderController {
         }
     }
 
+    
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updateSender(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateBillSenderRequest request) {
+        try {
+            BillSender sender = billSenderService.updateTaskTitle(
+                    id,
+                    request.taskTitle()
+            );
+
+            return ResponseEntity.ok(sender);
+        } catch (IllegalArgumentException e) {
+            if ("Bill sender not found.".equals(e.getMessage())) {
+                return ResponseEntity.notFound().build();
+            }
+
+            return ResponseEntity.badRequest().body(
+                    java.util.Map.of("message", e.getMessage()));
+        }
+    }
+
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSender(@PathVariable Long id) {
         if (!billSenderService.deleteSender(id)) {
@@ -62,4 +85,11 @@ public class BillSenderController {
             @Size(max = 100, message = "Task title must be at most 100 characters")
             String taskTitle
     ) {}
+    
+    public record UpdateBillSenderRequest(
+            @NotBlank(message = "Task title is required")
+            @Size(max = 100, message = "Task title must be at most 100 characters")
+            String taskTitle
+    ) {}
+
 }
