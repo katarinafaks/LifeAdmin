@@ -1,0 +1,181 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeAdmin — My Tasks</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="/app.js" defer></script>
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="/">
+            <span class="brand-icon">L</span>
+            <span>LifeAdmin</span>
+        </a>
+        <span class="topbar-label">PERSONAL ORGANIZER</span>
+    </header>
+
+    <main class="container">
+        <section class="welcome">
+            <p class="eyebrow">YOUR PERSONAL SPACE</p>
+            <h1>Get things done.</h1>
+            <p class="subtitle">
+                Keep track of what matters, one task at a time.
+            </p>
+        </section>
+
+        <section class="stats" aria-label="Task summary">
+            <article class="stat-card">
+                <span class="stat-label">All tasks</span>
+                <span class="stat-number" id="total-count">0</span>
+            </article>
+            <article class="stat-card">
+                <span class="stat-label">To do</span>
+                <span class="stat-number" id="todo-count">0</span>
+            </article>
+            <article class="stat-card">
+                <span class="stat-label">Completed</span>
+                <span class="stat-number" id="completed-count">0</span>
+            </article>
+        </section>
+
+        <section class="content-grid">
+            <section class="panel form-panel">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">MAKE A PLAN</p>
+                        <h2>New task</h2>
+                    </div>
+                    <span class="heading-icon" aria-hidden="true">+</span>
+                </div>
+
+                <form id="task-form">
+                    <label for="title">Task title <span class="required">*</span></label>
+                    <input
+                        id="title"
+                        name="title"
+                        type="text"
+                        maxlength="100"
+                        placeholder="e.g. Submit my thesis"
+                        required
+                    >
+
+                    <label for="description">Description</label>
+                    <textarea
+                        id="description"
+                        name="description"
+                        maxlength="1000"
+                        rows="3"
+                        placeholder="Add any useful details..."
+                    ></textarea>
+
+                    <label for="dueDate">Due date <span class="optional">(optional)</span></label>
+                    <input id="dueDate" name="dueDate" type="date">
+
+                    <button class="primary-button" id="submit-button" type="submit">
+                        <span>+</span> Add task
+                    </button>
+
+                    <p id="form-message" class="message" role="status" aria-live="polite"></p>
+                </form>
+            </section>
+
+            <section class="panel tasks-panel">
+                <div class="section-heading tasks-heading">
+                    <div>
+                        <p class="eyebrow">YOUR OVERVIEW</p>
+                        <h2>My tasks</h2>
+                    </div>
+
+                    <div class="task-controls">
+                        <button
+                            class="secondary-button"
+                            id="sender-manager-toggle"
+                            type="button"
+                        >
+                            Manage senders
+                        </button>
+                        <button
+                            class="gmail-scan-button"
+                            id="gmail-scan-button"
+                            type="button"
+                        >
+                            Scan Gmail for bills
+                        </button>
+
+                        <select id="task-filter" aria-label="Filter tasks">
+                            <option value="all">All tasks</option>
+                            <option value="todo">To do</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
+                <p
+                    id="gmail-scan-message"
+                    class="message"
+                    role="status"
+                    aria-live="polite"
+                ></p>
+                <section id="sender-manager" class="sender-manager" hidden>
+                    <h3>Bill senders</h3>
+                    <p class="sender-manager-description">
+                        Add an email address and choose the title for tasks imported from it.
+                    </p>
+
+                    <form id="sender-form">
+                        <label for="sender-email">Sender email</label>
+                        <input
+                            id="sender-email"
+                            name="senderEmail"
+                            type="email"
+                            maxlength="254"
+                            placeholder="e.g. bills@example.com"
+                            required
+                        >
+
+                        <label for="sender-task-title">Task title</label>
+                        <input
+                            id="sender-task-title"
+                            name="taskTitle"
+                            type="text"
+                            maxlength="100"
+                            placeholder="e.g. Internet bill"
+                            required
+                        >
+
+                        <button class="primary-button" id="sender-submit-button" type="submit">
+                            Add sender
+                        </button>
+
+                        <p id="sender-form-message" class="message"
+                        role="status" aria-live="polite"></p>
+                    </form>
+
+                    <h4>Configured senders</h4>
+                    <div id="sender-list"></div>
+                </section>
+                <div class="task-columns">
+                    <section class="task-column">
+                        <h2>Tasks with due dates</h2>
+                        <div id="dated-task-list"></div>
+                    </section>
+
+                    <section class="task-column">
+                        <h2>Tasks without due dates</h2>
+                        <div id="undated-task-list"></div>
+                    </section>
+                </div>
+
+                <p id="list-message" class="message" role="status"></p>
+            </section>
+        </section>
+
+        <footer>
+            <span>Small steps still move you forward.</span>
+            <span>LifeAdmin · Your life, a little more organized.</span>
+        </footer>
+    </main>
+</body>
+</html>
